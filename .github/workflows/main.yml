@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 21
-      - run: mvn -B install jib:build -Djib.to.auth.password=${{ secrets.PUSH_TOKEN }} -Djib.to.auth.username=none
+      - run: mvn -B install jib:build -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} -Djib.to.auth.username=${{ github.actor }}
         name: jib
         env:
           GITHUB_TOKEN: ${{ secrets.PUSH_TOKEN }}
