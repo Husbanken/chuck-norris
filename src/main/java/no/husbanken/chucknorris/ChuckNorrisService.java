@@ -3,10 +3,10 @@ package no.husbanken.chucknorris;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -47,7 +47,6 @@ public class ChuckNorrisService {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    @SneakyThrows
     public Joke getRandomChuckNorrisJoke() {
         List<Joke> listOfJokes = JOKES;
 
@@ -55,8 +54,12 @@ public class ChuckNorrisService {
             File file = new File(chuckProperties.getJokeLocation());
 
             if (file.exists()) {
-                listOfJokes = objectMapper.readValue(file, new TypeReference<>() {
-                });
+                try {
+                    listOfJokes = objectMapper.readValue(file, new TypeReference<>() {
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to parse json", e);
+                }
 
             } else {
                 throw new RuntimeException("File with jokes does not exist!");
